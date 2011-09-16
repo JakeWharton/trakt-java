@@ -74,12 +74,12 @@
             <ul>
               
     <li>
-              <strong>Home</strong>
-        </li>
+                    <a href="index.html">Home</a>
+          </li>
               
     <li>
-                    <a href="maven.html">Maven</a>
-          </li>
+              <strong>Maven</strong>
+        </li>
           </ul>
               <h5>Project Documentation</h5>
             <ul>
@@ -140,7 +140,15 @@
     </div>
     <div id="bodyColumn">
       <div id="contentBox">
-        <div class="section"><h2>Trakt Java API<a name="Trakt_Java_API"></a></h2><p>A Java wrapper around the Trakt RESTful API and a simple DSL for easy interaction.</p><p>Remote services are grouped into local service objects which can be centrally managed by a ServiceManager instance. The manager will act as a factory for all of the services and will automatically initialize them with your credentials and API key.</p><p>Each service contains methods which correspond to a remote method. Each of these methods instantiates a class that will allow for you to build the parameters using the Java builder pattern.</p><p>Required remote method parameters will be arguments to the service method and all of the methods in the returned builder are optional.</p><p>When fully assembled, you can trigger the remote execution by calling the fire() method. This will return a native object which represents the result of the execution. All returned objects are immutable and should be handled as such.</p><p>WARNING: The Trakt API has NO versioning support so be sure to extensively test all API calls!</p></div>
+        <div class="section"><h2>Maven<a name="Maven"></a></h2><p>This project has JARs deployed to a custom repository for easy inclusion.</p><p>Add the following dependency:</p><div><pre>&lt;dependency&gt;
+  &lt;groupId&gt;com.jakewharton&lt;/groupId&gt;
+  &lt;artifactId&gt;trakt-java&lt;/artifactId&gt;
+  &lt;version&gt;1.1.0&lt;/version&gt;
+&lt;/dependency&gt;</pre></div><p>In the <tt>repositories</tt> section add the following:</p><div><pre>&lt;repository&gt;
+  &lt;id&gt;com.jakewharton.repository&lt;/id&gt;
+  &lt;name&gt;Jake Wharton's Personal Repository&lt;/name&gt;
+  &lt;url&gt;http://r.jakewharton.com/maven/release/&lt;/url&gt;
+&lt;/repository&gt;</pre></div></div>
       </div>
     </div>
     <div class="clear">
