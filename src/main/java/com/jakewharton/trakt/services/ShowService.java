@@ -1,9 +1,7 @@
 package com.jakewharton.trakt.services;
 
 import java.util.List;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
+import org.codehaus.jackson.type.TypeReference;
 import com.jakewharton.trakt.TraktApiBuilder;
 import com.jakewharton.trakt.TraktApiService;
 import com.jakewharton.trakt.entities.MediaEntity;
@@ -551,7 +549,7 @@ public class ShowService extends TraktApiService {
         private static final String URI = "/show/cancelwatching/" + FIELD_API_KEY;
 
         private CancelWatchingBuilder(ShowService service) {
-            super(service, new TypeToken<Response>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<Response>() {}, URI, HttpMethod.Post);
         }
     }
     public static final class EpisodeLibraryBuilder extends TraktApiBuilder<Void> {
@@ -568,7 +566,7 @@ public class ShowService extends TraktApiService {
         private JsonArray episodeList;
 
         private EpisodeLibraryBuilder(ShowService service) {
-            super(service, new TypeToken<Void>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<Void>() {}, URI, HttpMethod.Post);
 
             this.episodeList = new JsonArray();
         }
@@ -652,7 +650,7 @@ public class ShowService extends TraktApiService {
         private JsonArray episodeList;
 
         private EpisodeSeenBuilder(ShowService service) {
-            super(service, new TypeToken<Void>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<Void>() {}, URI, HttpMethod.Post);
 
             this.episodeList = new JsonArray();
         }
@@ -726,7 +724,7 @@ public class ShowService extends TraktApiService {
         private static final String URI = "/show/episode/summary.json/" + FIELD_API_KEY + "/" + FIELD_TITLE + "/" + FIELD_SEASON + "/" + FIELD_EPISODE;
 
         private EpisodeSummaryBuilder(ShowService service) {
-            super(service, new TypeToken<MediaEntity>() {}, URI);
+            super(service, new TypeReference<MediaEntity>() {}, URI);
         }
 
         /**
@@ -787,7 +785,7 @@ public class ShowService extends TraktApiService {
         private JsonArray episodeList;
 
         private EpisodeUnlibraryBuilder(ShowService service) {
-            super(service, new TypeToken<Void>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<Void>() {}, URI, HttpMethod.Post);
 
             this.episodeList = new JsonArray();
         }
@@ -871,7 +869,7 @@ public class ShowService extends TraktApiService {
         private JsonArray episodeList;
 
         private EpisodeUnseenBuilder(ShowService service) {
-            super(service, new TypeToken<Void>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<Void>() {}, URI, HttpMethod.Post);
 
             this.episodeList = new JsonArray();
         }
@@ -955,7 +953,7 @@ public class ShowService extends TraktApiService {
         private JsonArray episodeList;
 
         private EpisodeUnwatchlistBuilder(ShowService service) {
-            super(service, new TypeToken<Void>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<Void>() {}, URI, HttpMethod.Post);
 
             this.episodeList = new JsonArray();
         }
@@ -1029,7 +1027,7 @@ public class ShowService extends TraktApiService {
         private static final String URI = "/show/episode/watchingnow.json/" + FIELD_API_KEY + "/" + FIELD_TITLE + "/" + FIELD_SEASON + "/" + FIELD_EPISODE;
 
         private EpisodeWatchingNowBuilder(ShowService service) {
-            super(service, new TypeToken<List<UserProfile>>() {}, URI);
+            super(service, new TypeReference<List<UserProfile>>() {}, URI);
         }
 
         /**
@@ -1081,7 +1079,7 @@ public class ShowService extends TraktApiService {
         private JsonArray episodeList;
 
         private EpisodeWatchlistBuilder(ShowService service) {
-            super(service, new TypeToken<Void>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<Void>() {}, URI, HttpMethod.Post);
 
             this.episodeList = new JsonArray();
         }
@@ -1164,7 +1162,7 @@ public class ShowService extends TraktApiService {
         private static final String URI = "/show/scrobble/" + FIELD_API_KEY;
 
         private ScrobbleBuilder(ShowService service) {
-            super(service, new TypeToken<Response>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<Response>() {}, URI, HttpMethod.Post);
             this.includeScrobbleDebugStrings();
         }
 
@@ -1273,7 +1271,7 @@ public class ShowService extends TraktApiService {
         private static final String URI = "/show/season.json/" + FIELD_API_KEY + "/" + FIELD_QUERY + "/" + FIELD_SEASON;
 
         private SeasonBuilder(ShowService service, String query, int season) {
-            super(service, new TypeToken<List<TvShowEpisode>>() {}, URI);
+            super(service, new TypeReference<List<TvShowEpisode>>() {}, URI);
 
             this.field(FIELD_QUERY, query);
             this.field(FIELD_SEASON, season);
@@ -1283,7 +1281,7 @@ public class ShowService extends TraktApiService {
         private static final String URI = "/show/seasons.json/" + FIELD_API_KEY + "/" + FIELD_QUERY;
 
         private SeasonsBuilder(ShowService service, String query) {
-            super(service, new TypeToken<List<TvShowSeason>>() {}, URI);
+            super(service, new TypeReference<List<TvShowSeason>>() {}, URI);
 
             this.field(FIELD_QUERY, query);
         }
@@ -1294,7 +1292,7 @@ public class ShowService extends TraktApiService {
         private static final String URI = "/show/summary.json/" + FIELD_API_KEY + "/" + FIELD_TITLE + "/" + FIELD_EXTENDED;
 
         private SummaryBuilder(ShowService service) {
-            super(service, new TypeToken<TvShow>() {}, URI);
+            super(service, new TypeReference<TvShow>() {}, URI);
         }
 
         /**
@@ -1326,7 +1324,7 @@ public class ShowService extends TraktApiService {
         private static final String URI = "/shows/trending.json/" + FIELD_API_KEY;
 
         private TrendingBuilder(ShowService service) {
-            super(service, new TypeToken<List<TvShow>>() {}, URI);
+            super(service, new TypeReference<List<TvShow>>() {}, URI);
         }
     }
     public static final class UnlibraryBuilder extends TraktApiBuilder<Void> {
@@ -1338,7 +1336,7 @@ public class ShowService extends TraktApiService {
         private static final String URI = "/show/unlibrary/" + FIELD_API_KEY;
 
         private UnlibraryBuilder(ShowService service) {
-            super(service, new TypeToken<Void>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<Void>() {}, URI, HttpMethod.Post);
         }
 
         /**
@@ -1397,7 +1395,7 @@ public class ShowService extends TraktApiService {
         private JsonArray showList;
 
         private UnwatchlistBuilder(ShowService service) {
-            super(service, new TypeToken<Void>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<Void>() {}, URI, HttpMethod.Post);
 
             this.showList = new JsonArray();
         }
@@ -1461,7 +1459,7 @@ public class ShowService extends TraktApiService {
         private static final String URI = "/show/watching/" + FIELD_API_KEY;
 
         private WatchingBuilder(ShowService service) {
-            super(service, new TypeToken<Response>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<Response>() {}, URI, HttpMethod.Post);
             this.includeScrobbleDebugStrings();
         }
 
@@ -1570,7 +1568,7 @@ public class ShowService extends TraktApiService {
         private static final String URI = "/show/watchingnow.json/" + FIELD_API_KEY + "/" + FIELD_QUERY;
 
         private WatchingNowBuilder(ShowService service) {
-            super(service, new TypeToken<List<UserProfile>>() {}, URI);
+            super(service, new TypeReference<List<UserProfile>>() {}, URI);
         }
 
         /**
@@ -1598,7 +1596,7 @@ public class ShowService extends TraktApiService {
         private JsonArray showList;
 
         private WatchlistBuilder(ShowService service) {
-            super(service, new TypeToken<Void>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<Void>() {}, URI, HttpMethod.Post);
 
             this.showList = new JsonArray();
         }
@@ -1653,7 +1651,7 @@ public class ShowService extends TraktApiService {
         private static final String URI = "/show/shouts.json/" + FIELD_API_KEY + "/" + FIELD_TITLE;
 
         private ShoutsBuilder(ShowService service) {
-            super(service, new TypeToken<List<Shout>>() {}, URI);
+            super(service, new TypeReference<List<Shout>>() {}, URI);
         }
 
         /**
@@ -1682,7 +1680,7 @@ public class ShowService extends TraktApiService {
         private static final String URI = "/show/episode/shouts.json/" + FIELD_API_KEY + "/" + FIELD_TITLE + "/" + FIELD_SEASON + "/" + FIELD_EPISODE;
 
         private EpisodeShoutsBuilder(ShowService service) {
-            super(service, new TypeToken<List<Shout>>() {}, URI);
+            super(service, new TypeReference<List<Shout>>() {}, URI);
         }
 
         /**
@@ -1736,7 +1734,7 @@ public class ShowService extends TraktApiService {
         private static final String URI = "/show/related.json/" + FIELD_API_KEY + "/" + FIELD_TITLE + "/" + FIELD_EXTENDED + "/" + FIELD_HIDE_WATCHED;
 
         private RelatedBuilder(ShowService service) {
-            super(service, new TypeToken<List<TvShow>>() {}, URI);
+            super(service, new TypeReference<List<TvShow>>() {}, URI);
         }
 
         /**
@@ -1799,7 +1797,7 @@ public class ShowService extends TraktApiService {
         private static final String URI = "/show/checkin/" + FIELD_API_KEY;
 
         private CheckinBuilder(ShowService service) {
-            super(service, new TypeToken<Response>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<Response>() {}, URI, HttpMethod.Post);
             this.includeCheckinDebugStrings();
         }
 
@@ -1855,7 +1853,7 @@ public class ShowService extends TraktApiService {
         private static final String URI = "/show/cancelcheckin/" + FIELD_API_KEY;
 
         private CancelCheckinBuilder(ShowService service) {
-            super(service, new TypeToken<Response>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<Response>() {}, URI, HttpMethod.Post);
         }
     }
 }

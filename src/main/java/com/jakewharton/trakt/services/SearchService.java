@@ -1,7 +1,7 @@
 package com.jakewharton.trakt.services;
 
 import java.util.List;
-import com.google.gson.reflect.TypeToken;
+import org.codehaus.jackson.type.TypeReference;
 import com.jakewharton.trakt.TraktApiBuilder;
 import com.jakewharton.trakt.TraktApiService;
 import com.jakewharton.trakt.entities.MediaEntity;
@@ -66,7 +66,7 @@ public class SearchService extends TraktApiService {
         private static final String URI = "/search/episodes.json/" + FIELD_API_KEY + "/" + FIELD_QUERY;
 
         private EpisodesBuilder(SearchService service, String query) {
-            super(service, new TypeToken<List<MediaEntity>>() {}, URI);
+            super(service, new TypeReference<List<MediaEntity>>() {}, URI);
 
             this.field(FIELD_QUERY, query);
         }
@@ -75,7 +75,7 @@ public class SearchService extends TraktApiService {
         private static final String URI = "/search/movies.json/" + FIELD_API_KEY + "/" + FIELD_QUERY;
 
         private MoviesBuilder(SearchService service, String query) {
-            super(service, new TypeToken<List<Movie>>() {}, URI);
+            super(service, new TypeReference<List<Movie>>() {}, URI);
 
             this.field(FIELD_QUERY, query);
         }
@@ -84,7 +84,7 @@ public class SearchService extends TraktApiService {
         private static final String URI = "/search/people.json/" + FIELD_API_KEY + "/" + FIELD_QUERY;
 
         private PeopleBuilder(SearchService service, String query) {
-            super(service, new TypeToken<List<Person>>() {}, URI);
+            super(service, new TypeReference<List<Person>>() {}, URI);
 
             this.field(FIELD_QUERY, query);
         }
@@ -93,7 +93,7 @@ public class SearchService extends TraktApiService {
         private static final String URI = "/search/shows.json/" + FIELD_API_KEY + "/" + FIELD_QUERY;
 
         private ShowsBuilder(SearchService service, String query) {
-            super(service, new TypeToken<List<TvShow>>() {}, URI);
+            super(service, new TypeReference<List<TvShow>>() {}, URI);
 
             this.field(FIELD_QUERY, query);
         }
@@ -102,7 +102,7 @@ public class SearchService extends TraktApiService {
         private static final String URI = "/search/users.json/" + FIELD_API_KEY + "/" + FIELD_QUERY;
 
         private UsersBuilder(SearchService service, String query) {
-            super(service, new TypeToken<List<UserProfile>>() {}, URI);
+            super(service, new TypeReference<List<UserProfile>>() {}, URI);
 
             this.field(FIELD_QUERY, query);
         }

@@ -1,14 +1,16 @@
 package com.jakewharton.trakt;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.reflect.TypeToken;
+import java.util.Map;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.type.TypeReference;
 import com.jakewharton.apibuilder.ApiBuilder;
 import com.jakewharton.apibuilder.ApiException;
 import com.jakewharton.trakt.entities.Response;
@@ -70,13 +72,13 @@ public abstract class TraktApiBuilder<T> extends ApiBuilder {
     private final TraktApiService service;
 
     /** Type token of return type. */
-    private final TypeToken<T> token;
+    private final TypeReference<T> token;
 
     /** HTTP request method to use. */
     private final HttpMethod method;
 
     /** String representation of JSON POST body. */
-    private JsonObject postBody;
+    private final Map<String, Object> postBody;
 
 
     /**
@@ -86,7 +88,7 @@ public abstract class TraktApiBuilder<T> extends ApiBuilder {
      * @param token Return type token.
      * @param methodUri URI method format string.
      */
-    public TraktApiBuilder(TraktApiService service, TypeToken<T> token, String methodUri) {
+    public TraktApiBuilder(TraktApiService service, TypeReference<T> token, String methodUri) {
         this(service, token, methodUri, HttpMethod.Get);
     }
 
@@ -98,14 +100,14 @@ public abstract class TraktApiBuilder<T> extends ApiBuilder {
      * @param urlFormat URL format string.
      * @param method HTTP method.
      */
-    public TraktApiBuilder(TraktApiService service, TypeToken<T> token, String urlFormat, HttpMethod method) {
+    public TraktApiBuilder(TraktApiService service, TypeReference<T> token, String urlFormat, HttpMethod method) {
         super((service.getUseSsl() ? BASE_URL_SSL : BASE_URL) + urlFormat);
 
         this.service = service;
 
         this.token = token;
         this.method = method;
-        this.postBody = new JsonObject();
+        this.postBody = new HashMap<String, Object>();
 
         this.field(FIELD_API_KEY, this.service.getApiKey());
     }
@@ -126,7 +128,17 @@ public abstract class TraktApiBuilder<T> extends ApiBuilder {
             throw new ApiException(e);
         }
 
-        T result = this.service.unmarshall(this.token, this.execute());
+        T result;
+        try {
+            result = this.service.unmarshall(this.token, this.execute());
+        } catch (JsonParseException e) {
+            throw new ApiException(e);
+        } catch (JsonMappingException e) {
+            throw new ApiException(e);
+        } catch (IOException e) {
+            throw new ApiException(e);
+        }
+        
         this.postFireCallback(result);
 
         return result;
@@ -181,7 +193,7 @@ public abstract class TraktApiBuilder<T> extends ApiBuilder {
      *
      * @return JSON object instance.
      */
-    protected final JsonElement execute() {
+    protected final InputStream execute() {
         String url = this.buildUrl();
         while (url.endsWith("/")) {
             url = url.substring(0, url.length() - 1);
@@ -198,19 +210,23 @@ public abstract class TraktApiBuilder<T> extends ApiBuilder {
             }
         } catch (ApiException ae) {
             try {
-                Response response = this.service.unmarshall(new TypeToken<Response>() {}, ae.getMessage());
+                Response response = this.service.unmarshall(new TypeReference<Response>() {}, ae.getMessage());
                 if (response != null) {
                     throw new TraktException(url, this.postBody, ae, response);
                 }
-            } catch (JsonParseException jpe) {
+            } catch (JsonParseException e) {
+                e.printStackTrace();
+            } catch (JsonMappingException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-
             throw new TraktException(url, this.postBody, ae);
         }
     }
 
     /**
-     * Print the HTTP request that would be made
+     * Print the HTTP request that would be made.
      */
     public final void print() {
         this.preFireCallback();
@@ -234,7 +250,12 @@ public abstract class TraktApiBuilder<T> extends ApiBuilder {
         switch (this.method) {
             case Post:
                 System.out.println();
-                System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(this.postBody));
+                try {
+                    System.out.println(TraktApiService.getObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(this.postBody));
+                } catch (Exception e) {
+                    System.out.println("ERROR: Could not print post body.");
+                    e.printStackTrace();
+                }
                 break;
         }
     }
@@ -387,11 +408,11 @@ public abstract class TraktApiBuilder<T> extends ApiBuilder {
     }
 
     protected final boolean hasPostParameter(String name) {
-        return this.postBody.has(name);
+        return this.postBody.containsKey(name);
     }
 
     protected final TraktApiBuilder<T> postParameter(String name, String value) {
-        this.postBody.addProperty(name, value);
+        this.postBody.put(name, value);
         return this;
     }
 
@@ -406,8 +427,8 @@ public abstract class TraktApiBuilder<T> extends ApiBuilder {
         return this;
     }
 
-    protected final TraktApiBuilder<T> postParameter(String name, JsonElement value) {
-        this.postBody.add(name, value);
+    protected final TraktApiBuilder<T> postParameter(String name, Map<?, ?> value) {
+        this.postBody.put(name, value);
         return this;
     }
 

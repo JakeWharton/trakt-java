@@ -2,9 +2,7 @@ package com.jakewharton.trakt.services;
 
 import java.util.Date;
 import java.util.List;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
+import org.codehaus.jackson.type.TypeReference;
 import com.jakewharton.trakt.TraktApiBuilder;
 import com.jakewharton.trakt.TraktApiService;
 import com.jakewharton.trakt.entities.Movie;
@@ -291,7 +289,7 @@ public class MovieService extends TraktApiService {
         private static final String URI = "/movie/cancelwatching/" + FIELD_API_KEY;
 
         private CancelWatchingBuilder(MovieService service) {
-            super(service, new TypeToken<Response>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<Response>() {}, URI, HttpMethod.Post);
         }
     }
     public static final class ScrobbleBuilder extends TraktApiBuilder<Response> {
@@ -305,7 +303,7 @@ public class MovieService extends TraktApiService {
         private static final String URI = "/movie/scrobble/" + FIELD_API_KEY;
 
         private ScrobbleBuilder(MovieService service) {
-            super(service, new TypeToken<Response>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<Response>() {}, URI, HttpMethod.Post);
             this.includeScrobbleDebugStrings();
         }
 
@@ -401,7 +399,7 @@ public class MovieService extends TraktApiService {
         private final JsonArray movieList;
 
         private SeenBuilder(MovieService service) {
-            super(service, new TypeToken<Void>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<Void>() {}, URI, HttpMethod.Post);
 
             this.movieList = new JsonArray();
         }
@@ -480,7 +478,7 @@ public class MovieService extends TraktApiService {
         private final JsonArray movieList;
 
         private LibraryBuilder(MovieService service) {
-            super(service, new TypeToken<Void>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<Void>() {}, URI, HttpMethod.Post);
 
             this.movieList = new JsonArray();
         }
@@ -539,7 +537,7 @@ public class MovieService extends TraktApiService {
         private static final String URI = "/movie/summary.json/" + FIELD_API_KEY + "/" + FIELD_QUERY;
 
         private SummaryBuilder(MovieService service, String query) {
-            super(service, new TypeToken<Movie>() {}, URI);
+            super(service, new TypeReference<Movie>() {}, URI);
 
             this.field(FIELD_QUERY, query);
         }
@@ -556,7 +554,7 @@ public class MovieService extends TraktApiService {
         private final JsonArray movieList;
 
         private UnlibraryBuilder(MovieService service) {
-            super(service, new TypeToken<Void>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<Void>() {}, URI, HttpMethod.Post);
 
             this.movieList = new JsonArray();
         }
@@ -623,7 +621,7 @@ public class MovieService extends TraktApiService {
         private final JsonArray movieList;
 
         private UnseenBuilder(MovieService service) {
-            super(service, new TypeToken<Void>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<Void>() {}, URI, HttpMethod.Post);
 
             this.movieList = new JsonArray();
         }
@@ -690,7 +688,7 @@ public class MovieService extends TraktApiService {
         private final JsonArray movieList;
 
         private UnwatchlistBuilder(MovieService service) {
-            super(service, new TypeToken<Void>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<Void>() {}, URI, HttpMethod.Post);
 
             this.movieList = new JsonArray();
         }
@@ -756,7 +754,7 @@ public class MovieService extends TraktApiService {
         private static final String URI = "/movie/watching/" + FIELD_API_KEY;
 
         private WatchingBuilder(MovieService service) {
-            super(service, new TypeToken<Response>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<Response>() {}, URI, HttpMethod.Post);
             this.includeScrobbleDebugStrings();
         }
         /**
@@ -841,7 +839,7 @@ public class MovieService extends TraktApiService {
         private static final String URI = "/movie/watchingnow.json/" + FIELD_API_KEY + "/" + FIELD_QUERY;
 
         private WatchingNowBuilder(MovieService service, String query) {
-            super(service, new TypeToken<List<UserProfile>>() {}, URI);
+            super(service, new TypeReference<List<UserProfile>>() {}, URI);
 
             this.field(FIELD_QUERY, query);
         }
@@ -858,7 +856,7 @@ public class MovieService extends TraktApiService {
         private final JsonArray movieList;
 
         private WatchlistBuilder(MovieService service) {
-            super(service, new TypeToken<Void>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<Void>() {}, URI, HttpMethod.Post);
 
             this.movieList = new JsonArray();
         }
@@ -917,7 +915,7 @@ public class MovieService extends TraktApiService {
         private static final String URI = "/movie/shouts.json/" + FIELD_API_KEY + "/" + FIELD_TITLE;
 
         private ShoutsBuilder(MovieService service) {
-            super(service, new TypeToken<List<Shout>>() {}, URI);
+            super(service, new TypeReference<List<Shout>>() {}, URI);
         }
 
         /**
@@ -946,7 +944,7 @@ public class MovieService extends TraktApiService {
         private static final String URI = "/movies/trending.json/" + FIELD_API_KEY;
 
         private TrendingBuilder(MovieService service) {
-            super(service, new TypeToken<List<Movie>>() {}, URI);
+            super(service, new TypeReference<List<Movie>>() {}, URI);
         }
     }
     public static final class RelatedBuilder extends TraktApiBuilder<List<Movie>> {
@@ -955,7 +953,7 @@ public class MovieService extends TraktApiService {
         private static final String URI = "/movie/related.json/" + FIELD_API_KEY + "/" + FIELD_TITLE + "/" + FIELD_HIDE_WATCHED;
 
         private RelatedBuilder(MovieService service) {
-            super(service, new TypeToken<List<Movie>>() {}, URI);
+            super(service, new TypeReference<List<Movie>>() {}, URI);
         }
 
         /**
@@ -1005,7 +1003,7 @@ public class MovieService extends TraktApiService {
         private static final String URI = "/movie/checkin/" + FIELD_API_KEY;
 
         private CheckinBuilder(MovieService service) {
-            super(service, new TypeToken<Response>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<Response>() {}, URI, HttpMethod.Post);
             this.includeCheckinDebugStrings();
         }
 
@@ -1055,7 +1053,7 @@ public class MovieService extends TraktApiService {
         private static final String URI = "/movie/cancelcheckin/" + FIELD_API_KEY;
 
         private CancelCheckinBuilder(MovieService service) {
-            super(service, new TypeToken<Response>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<Response>() {}, URI, HttpMethod.Post);
         }
     }
 }

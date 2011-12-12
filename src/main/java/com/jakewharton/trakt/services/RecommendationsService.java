@@ -1,7 +1,7 @@
 package com.jakewharton.trakt.services;
 
 import java.util.List;
-import com.google.gson.reflect.TypeToken;
+import org.codehaus.jackson.type.TypeReference;
 import com.jakewharton.trakt.TraktApiBuilder;
 import com.jakewharton.trakt.TraktApiService;
 import com.jakewharton.trakt.entities.DismissResponse;
@@ -90,7 +90,7 @@ public class RecommendationsService extends TraktApiService {
         private static final String URI = "/recommendations/movies/" + FIELD_API_KEY;
 
         private MoviesBuilder(RecommendationsService service) {
-            super(service, new TypeToken<List<Movie>>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<List<Movie>>() {}, URI, HttpMethod.Post);
         }
 
         /**
@@ -135,7 +135,7 @@ public class RecommendationsService extends TraktApiService {
         private static final String URI = "/recommendations/shows/" + FIELD_API_KEY;
 
         private ShowsBuilder(RecommendationsService service) {
-            super(service, new TypeToken<List<TvShow>>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<List<TvShow>>() {}, URI, HttpMethod.Post);
         }
 
         /**
@@ -181,7 +181,7 @@ public class RecommendationsService extends TraktApiService {
         private static final String URI = "/recommendations/movies/dismiss/" + FIELD_API_KEY;
 
         private DismissMovieBuilder(RecommendationsService service) {
-            super(service, new TypeToken<DismissResponse>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<DismissResponse>() {}, URI, HttpMethod.Post);
         }
 
         /**
@@ -236,7 +236,7 @@ public class RecommendationsService extends TraktApiService {
         private static final String URI = "/recommendations/shows/dismiss/" + FIELD_API_KEY;
 
         private DismissShowBuilder(RecommendationsService service) {
-            super(service, new TypeToken<DismissResponse>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<DismissResponse>() {}, URI, HttpMethod.Post);
         }
 
         /**

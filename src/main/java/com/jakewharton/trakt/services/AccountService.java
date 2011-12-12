@@ -1,6 +1,6 @@
 package com.jakewharton.trakt.services;
 
-import com.google.gson.reflect.TypeToken;
+import org.codehaus.jackson.type.TypeReference;
 import com.jakewharton.trakt.TraktApiBuilder;
 import com.jakewharton.trakt.TraktApiService;
 import com.jakewharton.trakt.entities.Response;
@@ -38,7 +38,7 @@ public class AccountService extends TraktApiService {
         private static final String URI = "/account/create/" + FIELD_API_KEY;
 
         private CreateBuilder(AccountService service) {
-            super(service, new TypeToken<Response>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<Response>() {}, URI, HttpMethod.Post);
         }
 
         /**
@@ -78,7 +78,7 @@ public class AccountService extends TraktApiService {
         private static final String URI = "/account/test/" + FIELD_API_KEY;
 
         private TestBuilder(AccountService service) {
-            super(service, new TypeToken<Response>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<Response>() {}, URI, HttpMethod.Post);
         }
     }
 }

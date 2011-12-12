@@ -1,7 +1,7 @@
 package com.jakewharton.trakt.entities;
 
 import java.util.List;
-import com.google.gson.annotations.SerializedName;
+import org.codehaus.jackson.annotate.JsonProperty;
 import com.jakewharton.trakt.TraktEntity;
 import com.jakewharton.trakt.enumerations.Rating;
 
@@ -30,12 +30,12 @@ public abstract class MediaBase implements TraktEntity {
     public Integer year;
     public String url;
     public Images images;
-    @SerializedName("top_watchers") public List<UserProfile> topWatchers;
+    @JsonProperty("top_watchers") public List<UserProfile> topWatchers;
     public Ratings ratings;
     public Stats stats;
-    @SerializedName("imdb_id") public String imdbId;
+    @JsonProperty("imdb_id") public String imdbId;
     public Rating rating;
-    @SerializedName("in_watchlist") public Boolean inWatchlist;
+    @JsonProperty("in_watchlist") public Boolean inWatchlist;
 
     /** @deprecated Use {@link #title} */
     @Deprecated

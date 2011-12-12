@@ -1,6 +1,6 @@
 package com.jakewharton.trakt.services;
 
-import com.google.gson.reflect.TypeToken;
+import org.codehaus.jackson.type.TypeReference;
 import com.jakewharton.trakt.TraktApiBuilder;
 import com.jakewharton.trakt.TraktApiService;
 import com.jakewharton.trakt.entities.RatingResponse;
@@ -88,7 +88,7 @@ public class RateService extends TraktApiService {
         private static final String URI = "/rate/episode/" + FIELD_API_KEY;
 
         private EpisodeBuilder(RateService service) {
-            super(service, new TypeToken<RatingResponse>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<RatingResponse>() {}, URI, HttpMethod.Post);
         }
 
         public EpisodeBuilder tvdbId(int tvdbId) {
@@ -140,7 +140,7 @@ public class RateService extends TraktApiService {
         private static final String URI = "/rate/movie/" + FIELD_API_KEY;
 
         private MovieBuilder(RateService service) {
-            super(service, new TypeToken<RatingResponse>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<RatingResponse>() {}, URI, HttpMethod.Post);
         }
 
         public MovieBuilder imdbId(String imdbId) {
@@ -180,7 +180,7 @@ public class RateService extends TraktApiService {
         private static final String URI = "/rate/show/" + FIELD_API_KEY;
 
         private ShowBuilder(RateService service) {
-            super(service, new TypeToken<RatingResponse>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<RatingResponse>() {}, URI, HttpMethod.Post);
         }
 
         public ShowBuilder tvdbId(int tvdbId) {

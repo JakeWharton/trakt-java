@@ -1,8 +1,7 @@
 package com.jakewharton.trakt.services;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.type.TypeReference;
 import com.jakewharton.trakt.TraktApiBuilder;
 import com.jakewharton.trakt.TraktApiService;
 import com.jakewharton.trakt.entities.ListItemsResponse;
@@ -74,7 +73,7 @@ public class ListService extends TraktApiService {
         private static final String URI = "/lists/add/" + FIELD_API_KEY;
 
         private AddBuilder(ListService service) {
-            super(service, new TypeToken<ListResponse>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<ListResponse>() {}, URI, HttpMethod.Post);
         }
 
         /**
@@ -116,7 +115,7 @@ public class ListService extends TraktApiService {
         private static final String URI = "/lists/delete/" + FIELD_API_KEY;
 
         private DeleteBuilder(ListService service) {
-            super(service, new TypeToken<Response>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<Response>() {}, URI, HttpMethod.Post);
         }
 
         /**
@@ -136,10 +135,10 @@ public class ListService extends TraktApiService {
 
         private static final String URI = "/lists/items/add/" + FIELD_API_KEY;
 
-        private final JsonArray items = new JsonArray();
+        private final Treemapper items = new 
 
         private ItemsAddBuilder(ListService service) {
-            super(service, new TypeToken<ListItemsResponse>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<ListItemsResponse>() {}, URI, HttpMethod.Post);
         }
 
         /**
@@ -231,7 +230,7 @@ public class ListService extends TraktApiService {
         private final JsonArray items = new JsonArray();
 
         private ItemsDeleteBuilder(ListService service) {
-            super(service, new TypeToken<Response>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<Response>() {}, URI, HttpMethod.Post);
         }
 
         /**
@@ -323,7 +322,7 @@ public class ListService extends TraktApiService {
         private static final String URI = "/lists/update/" + FIELD_API_KEY;
 
         private UpdateBuilder(ListService service) {
-            super(service, new TypeToken<ListResponse>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<ListResponse>() {}, URI, HttpMethod.Post);
         }
 
         /**

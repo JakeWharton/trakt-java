@@ -2,7 +2,7 @@ package com.jakewharton.trakt.services;
 
 import java.util.Date;
 import java.util.List;
-import com.google.gson.reflect.TypeToken;
+import org.codehaus.jackson.type.TypeReference;
 import com.jakewharton.trakt.TraktApiBuilder;
 import com.jakewharton.trakt.TraktApiService;
 import com.jakewharton.trakt.entities.CalendarDate;
@@ -32,7 +32,7 @@ public class CalendarService extends TraktApiService {
         private static final String URI = "/calendar/premieres.json/" + FIELD_API_KEY + "/" + FIELD_DATE + "/" + FIELD_DAYS;
 
         private PremieresBuilder(CalendarService service) {
-            super(service, new TypeToken<List<CalendarDate>>() {}, URI);
+            super(service, new TypeReference<List<CalendarDate>>() {}, URI);
         }
 
         /**
@@ -74,7 +74,7 @@ public class CalendarService extends TraktApiService {
         private static final String URI = "/calendar/shows.json/" + FIELD_API_KEY + "/" + FIELD_DATE + "/" + FIELD_DAYS;
 
         private ShowsBuilder(CalendarService service) {
-            super(service, new TypeToken<List<CalendarDate>>() {}, URI);
+            super(service, new TypeReference<List<CalendarDate>>() {}, URI);
         }
 
         /**

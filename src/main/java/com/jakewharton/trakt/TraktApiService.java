@@ -1,30 +1,30 @@
 package com.jakewharton.trakt;
 
+import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.lang.reflect.Field;
-import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
-import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
-import com.google.gson.reflect.TypeToken;
-import com.jakewharton.apibuilder.ApiException;
+import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.JsonParser;
+import org.codehaus.jackson.JsonProcessingException;
+import org.codehaus.jackson.JsonToken;
+import org.codehaus.jackson.map.DeserializationContext;
+import org.codehaus.jackson.map.JsonDeserializer;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.JsonSerializer;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.SerializerProvider;
+import org.codehaus.jackson.map.module.SimpleModule;
+import org.codehaus.jackson.type.TypeReference;
 import com.jakewharton.apibuilder.ApiService;
-import com.jakewharton.trakt.entities.MediaEntity;
 import com.jakewharton.trakt.entities.TvShowEpisode;
 import com.jakewharton.trakt.entities.TvShowSeason;
 import com.jakewharton.trakt.entities.WatchedMediaEntity;
@@ -60,7 +60,7 @@ public abstract class TraktApiService extends ApiService {
     private static final String HEADER_AUTHORIZATION_TYPE = "Basic";
 
     /** Character set used for encoding and decoding transmitted values. */
-    private static final Charset UTF_8_CHAR_SET = Charset.forName(ApiService.CONTENT_ENCODING);
+    //XXX private static final Charset UTF_8_CHAR_SET = Charset.forName(ApiService.CONTENT_ENCODING);
 
     /** HTTP post method name. */
     private static final String HTTP_METHOD_POST = "POST";
@@ -86,9 +86,6 @@ public abstract class TraktApiService extends ApiService {
     /** Time zone for Trakt dates. */
     private static final TimeZone TRAKT_TIME_ZONE = TimeZone.getTimeZone("GMT-8:00");
 
-
-    /** JSON parser for reading the content stream. */
-    private final JsonParser parser;
 
     /** API key. */
     private String apiKey;
@@ -116,8 +113,6 @@ public abstract class TraktApiService extends ApiService {
      * Create a new Trakt service with our proper default values.
      */
     public TraktApiService() {
-        this.parser = new JsonParser();
-
         //Setup timeout defaults
         this.setConnectTimeout(DEFAULT_TIMEOUT_CONNECT);
         this.setReadTimeout(DEFAULT_TIMEOUT_READ);
@@ -137,8 +132,8 @@ public abstract class TraktApiService extends ApiService {
      * @param url URL to request.
      * @return JSON object.
      */
-    public JsonElement get(String url) {
-        return this.unmarshall(this.executeGet(url));
+    public InputStream get(String url) {
+        return this.executeGet(url);
     }
 
     /**
@@ -148,8 +143,8 @@ public abstract class TraktApiService extends ApiService {
      * @param postBody String to use as the POST body.
      * @return JSON object.
      */
-    public JsonElement post(String url, String postBody) {
-        return this.unmarshall(this.executeMethod(url, postBody, null, HTTP_METHOD_POST, HttpURLConnection.HTTP_OK));
+    public InputStream post(String url, String postBody) {
+        return this.executeMethod(url, postBody, null, HTTP_METHOD_POST, HttpURLConnection.HTTP_OK);
     }
 
     /**
@@ -299,121 +294,137 @@ public abstract class TraktApiService extends ApiService {
     }
 
     /**
-     * Use GSON to deserialize a JSON object to a native class representation.
+     * Use Jackson to deserialize a JSON object to a native class representation.
      *
      * @param <T> Native class type.
      * @param typeToken Native class type wrapper.
      * @param response Serialized JSON object.
      * @return Deserialized native instance.
+     * @throws IOException 
+     * @throws JsonMappingException 
+     * @throws JsonParseException 
      */
     @SuppressWarnings("unchecked")
-    protected <T> T unmarshall(TypeToken<T> typeToken, JsonElement response) {
-        return (T)TraktApiService.getGsonBuilder().create().fromJson(response, typeToken.getType());
+    protected <T> T unmarshall(TypeReference<T> typeToken, InputStream response) throws JsonParseException, JsonMappingException, IOException {
+        return (T)TraktApiService.getObjectMapper().readValue(response, typeToken);
     }
 
     /**
-     * Use GSON to deserialize a JSON string to a native class representation.
+     * Use Jackson to deserialize a JSON string to a native class representation.
      *
      * @param <T> Native class type.
      * @param typeToken Native class type wrapper.
      * @param reponse Serialized JSON string.
      * @return Deserialized native instance.
+     * @throws IOException 
+     * @throws JsonMappingException 
+     * @throws JsonParseException 
      */
     @SuppressWarnings("unchecked")
-    protected <T> T unmarshall(TypeToken<T> typeToken, String reponse) {
-        return (T)TraktApiService.getGsonBuilder().create().fromJson(reponse, typeToken.getType());
+    protected <T> T unmarshall(TypeReference<T> typeToken, String reponse) throws JsonParseException, JsonMappingException, IOException {
+        return (T)TraktApiService.getObjectMapper().readValue(reponse, typeToken);
     }
 
-    /**
-     * Read the entirety of an input stream and parse to a JSON object.
-     *
-     * @param jsonContent JSON content input stream.
-     * @return Parsed JSON object.
-     */
-    protected JsonElement unmarshall(InputStream jsonContent) {
-        try {
-            JsonElement element = this.parser.parse(new InputStreamReader(jsonContent, UTF_8_CHAR_SET));
-            if (element.isJsonObject()) {
-                return element.getAsJsonObject();
-            } else if (element.isJsonArray()) {
-                return element.getAsJsonArray();
-            } else {
-                throw new ApiException("Unknown content found in response." + element);
-            }
-        } catch (Exception e) {
-            throw new ApiException(e);
-        } finally {
-            ApiService.closeStream(jsonContent);
+
+
+
+
+    private static ObjectMapper MAPPER = null;
+    
+    static ObjectMapper getObjectMapper() {
+        if (MAPPER == null) {
+            MAPPER = createObjectMapper();
         }
+        return MAPPER;
     }
 
     /**
-     * Create a {@link GsonBuilder} and register all of the custom types needed
+     * Create an {@link ObjectMapper} and register all of the custom types needed
      * in order to properly deserialize complex Trakt-specific type.
      *
-     * @return Assembled GSON builder instance.
+     * @return Assembled Jackson builder instance.
      */
-    static GsonBuilder getGsonBuilder() {
-        GsonBuilder builder = new GsonBuilder();
+    private static ObjectMapper createObjectMapper() {
+        ObjectMapper mapper = new ObjectMapper();
+        SimpleModule traktModule = new SimpleModule("trakt", new org.codehaus.jackson.Version(1, 0, 0, null));
 
         //class types
-        builder.registerTypeAdapter(Integer.class, new JsonDeserializer<Integer>() {
+        traktModule.addDeserializer(Integer.class, new JsonDeserializer<Integer> () {
             @Override
-            public Integer deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            public Integer deserialize(JsonParser arg0, DeserializationContext arg1) throws IOException, JsonProcessingException {
                 try {
-                    return new Integer(json.getAsInt());
-                } catch (NumberFormatException e) {
+                    return new Integer(arg0.getIntValue());
+                } catch (JsonParseException e) {
                     return null;
                 }
             }
         });
-        builder.registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
+        traktModule.addDeserializer(Date.class, new JsonDeserializer<Date>() {
             @Override
-            public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            public Date deserialize(JsonParser arg0, DeserializationContext arg1) throws IOException, JsonProcessingException {
                 try {
-                    long value = json.getAsLong();
+                    long value = arg0.getLongValue();
                     Calendar date = Calendar.getInstance(TRAKT_TIME_ZONE);
                     date.setTimeInMillis(value * TraktApiBuilder.MILLISECONDS_IN_SECOND);
                     return date.getTime();
-                } catch (NumberFormatException outer) {
+                } catch (JsonParseException outer) {
                     try {
-                        return JSON_STRING_DATE.parse(json.getAsString());
+                        return JSON_STRING_DATE.parse(arg0.getText());
                     } catch (ParseException inner) {
-                        throw new JsonParseException(outer);
+                        throw outer;
                     }
                 }
             }
         });
-        builder.registerTypeAdapter(Calendar.class, new JsonDeserializer<Calendar>() {
+        traktModule.addDeserializer(Calendar.class, new JsonDeserializer<Calendar>() {
             @Override
-            public Calendar deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            public Calendar deserialize(JsonParser arg0, DeserializationContext arg1) throws IOException, JsonProcessingException {
                 Calendar value = Calendar.getInstance(TRAKT_TIME_ZONE);
-                value.setTimeInMillis(json.getAsLong() * TraktApiBuilder.MILLISECONDS_IN_SECOND);
+                value.setTimeInMillis(arg0.getLongValue() * TraktApiBuilder.MILLISECONDS_IN_SECOND);
                 return value;
             }
         });
-        builder.registerTypeAdapter(TvShowSeason.Episodes.class, new JsonDeserializer<TvShowSeason.Episodes>() {
+        traktModule.addDeserializer(TvShowSeason.Episodes.class, new JsonDeserializer<TvShowSeason.Episodes>() {
             @Override
-            public TvShowSeason.Episodes deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            public TvShowSeason.Episodes deserialize(JsonParser arg0, DeserializationContext arg1) throws IOException, JsonProcessingException {
                 TvShowSeason.Episodes episodes = new TvShowSeason.Episodes();
                 try {
-                    if (json.isJsonArray()) {
-                        if (json.getAsJsonArray().get(0).isJsonPrimitive()) {
+                    if (arg0.isExpectedStartArrayToken()) {
+                        JsonToken token = arg0.nextToken();
+                        Boolean isInteger = null;
+                        List<Integer> asInteger = null;
+                        List<TvShowEpisode> asEpisode = null;
+                        while (token != JsonToken.END_ARRAY) {
+                            if (isInteger == null) {
+                                isInteger = token.isNumeric();
+                                if (isInteger) {
+                                    asInteger = new ArrayList<Integer>();
+                                } else {
+                                    asEpisode = new ArrayList<TvShowEpisode>();
+                                }
+                            }
+                            if (isInteger) {
+                                asInteger.add(arg0.getValueAsInt());
+                            } else {
+                                
+                            }
+                        }
+                        if (arg0.getAsJsonArray().get(0).isJsonPrimitive()) {
                             //Episode number list
                             Field fieldNumbers = TvShowSeason.Episodes.class.getDeclaredField("numbers");
                             fieldNumbers.setAccessible(true);
-                            fieldNumbers.set(episodes, context.deserialize(json, (new TypeToken<List<Integer>>() {}).getType()));
+                            fieldNumbers.set(episodes, arg0.readValueAs(new TypeReference<List<Integer>>() {}));
                         } else {
                             //Episode object list
                             Field fieldList = TvShowSeason.Episodes.class.getDeclaredField("episodes");
                             fieldList.setAccessible(true);
-                            fieldList.set(episodes, context.deserialize(json, (new TypeToken<List<TvShowEpisode>>() {}).getType()));
+                            fieldList.set(episodes, arg0.readValueAs(new TypeReference<List<TvShowEpisode>>() {}));
                         }
                     } else {
                         //Episode count
                         Field fieldCount = TvShowSeason.Episodes.class.getDeclaredField("count");
                         fieldCount.setAccessible(true);
-                        fieldCount.set(episodes, new Integer(json.getAsInt()));
+                        fieldCount.set(episodes, new Integer(arg0.getIntValue()));
                     }
                 } catch (SecurityException e) {
                     throw new JsonParseException(e);
@@ -427,81 +438,80 @@ public abstract class TraktApiService extends ApiService {
                 return episodes;
             }
         });
-        builder.registerTypeAdapter(WatchedMediaEntity.class, new JsonDeserializer<WatchedMediaEntity>() {
+        traktModule.addDeserializer(WatchedMediaEntity.class, new JsonDeserializer<WatchedMediaEntity>() {
             @Override
-            public WatchedMediaEntity deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-                if (json.isJsonArray()) {
-                    if (json.getAsJsonArray().size() != 0) {
-                        throw new JsonParseException("\"watched\" field returned a non-empty array.");
-                    }
+            public WatchedMediaEntity deserialize(JsonParser arg0, DeserializationContext arg1) throws IOException, JsonProcessingException {
+                if (arg0.isExpectedStartArrayToken()) {
                     return null;
                 } else {
-                    return context.deserialize(json, (new TypeToken<MediaEntity>() {}).getType());
+                    return arg0.readValueAs(WatchedMediaEntity.class);
                 }
             }
         });
+
         //enum types
-        builder.registerTypeAdapter(ActivityAction.class, new JsonDeserializer<ActivityAction>() {
+        traktModule.addDeserializer(ActivityAction.class, new JsonDeserializer<ActivityAction>() {
             @Override
-            public ActivityAction deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-                return ActivityAction.fromValue(json.getAsString());
+            public ActivityAction deserialize(JsonParser arg0, DeserializationContext arg1) throws IOException, JsonProcessingException {
+                return ActivityAction.fromValue(arg0.getText());
             }
         });
-        builder.registerTypeAdapter(ActivityType.class, new JsonDeserializer<ActivityType>() {
+        traktModule.addDeserializer(ActivityType.class, new JsonDeserializer<ActivityType>() {
             @Override
-            public ActivityType deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-                return ActivityType.fromValue(json.getAsString());
+            public ActivityType deserialize(JsonParser arg0, DeserializationContext arg1) throws IOException, JsonProcessingException {
+                return ActivityType.fromValue(arg0.getText());
             }
         });
-        builder.registerTypeAdapter(DayOfTheWeek.class, new JsonDeserializer<DayOfTheWeek>() {
+        traktModule.addDeserializer(DayOfTheWeek.class, new JsonDeserializer<DayOfTheWeek>() {
             @Override
-            public DayOfTheWeek deserialize(JsonElement arg0, Type arg1, JsonDeserializationContext arg2) throws JsonParseException {
-                return DayOfTheWeek.fromValue(arg0.getAsString());
+            public DayOfTheWeek deserialize(JsonParser arg0, DeserializationContext arg1) throws IOException, JsonProcessingException {
+                return DayOfTheWeek.fromValue(arg0.getText());
             }
         });
-        builder.registerTypeAdapter(Gender.class, new JsonDeserializer<Gender>() {
+        traktModule.addDeserializer(Gender.class, new JsonDeserializer<Gender>() {
             @Override
-            public Gender deserialize(JsonElement arg0, Type arg1, JsonDeserializationContext arg2) throws JsonParseException {
-                return Gender.fromValue(arg0.getAsString());
+            public Gender deserialize(JsonParser arg0, DeserializationContext arg1) throws IOException, JsonProcessingException {
+                return Gender.fromValue(arg0.getText());
             }
         });
-        builder.registerTypeAdapter(ListItemType.class, new JsonDeserializer<ListItemType>() {
+        traktModule.addDeserializer(ListItemType.class, new JsonDeserializer<ListItemType>() {
             @Override
-            public ListItemType deserialize(JsonElement arg0, Type arg1, JsonDeserializationContext arg2) throws JsonParseException {
-                return ListItemType.fromValue(arg0.getAsString());
+            public ListItemType deserialize(JsonParser arg0, DeserializationContext arg1) throws IOException, JsonProcessingException {
+                return ListItemType.fromValue(arg0.getText());
             }
         });
-        builder.registerTypeAdapter(ListPrivacy.class, new JsonDeserializer<ListPrivacy>() {
+        traktModule.addDeserializer(ListPrivacy.class, new JsonDeserializer<ListPrivacy>() {
             @Override
-            public ListPrivacy deserialize(JsonElement arg0, Type arg1, JsonDeserializationContext arg2) throws JsonParseException {
-                return ListPrivacy.fromValue(arg0.getAsString());
+            public ListPrivacy deserialize(JsonParser arg0, DeserializationContext arg1) throws IOException, JsonProcessingException {
+                return ListPrivacy.fromValue(arg0.getText());
             }
         });
-        builder.registerTypeAdapter(MediaType.class, new JsonDeserializer<MediaType>() {
+        traktModule.addDeserializer(MediaType.class, new JsonDeserializer<MediaType>() {
             @Override
-            public MediaType deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-                return MediaType.fromValue(json.getAsString());
+            public MediaType deserialize(JsonParser arg0, DeserializationContext arg1) throws IOException, JsonProcessingException {
+                return MediaType.fromValue(arg0.getText());
             }
         });
-        builder.registerTypeAdapter(Rating.class, new JsonDeserializer<Rating>() {
+        traktModule.addDeserializer(Rating.class, new JsonDeserializer<Rating>() {
             @Override
-            public Rating deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-                return Rating.fromValue(json.getAsString());
+            public Rating deserialize(JsonParser arg0, DeserializationContext arg1) throws IOException, JsonProcessingException {
+                return Rating.fromValue(arg0.getText());
             }
         });
-        builder.registerTypeAdapter(Rating.class, new JsonSerializer<Rating>() {
+        traktModule.addSerializer(Rating.class, new JsonSerializer<Rating>() {
             @Override
-            public JsonElement serialize(Rating src, Type typeOfSrc, JsonSerializationContext context) {
-                return new JsonPrimitive(src.toString());
+            public void serialize(Rating arg0, JsonGenerator arg1, SerializerProvider arg2) throws IOException, JsonProcessingException {
+                arg1.writeString(arg0.toString()); //XXX Check if this happens by default
             }
         });
-        builder.registerTypeAdapter(RatingType.class, new JsonDeserializer<RatingType>() {
+        traktModule.addDeserializer(RatingType.class, new JsonDeserializer<RatingType>() {
             @Override
-            public RatingType deserialize(JsonElement arg0, Type arg1, JsonDeserializationContext arg2) throws JsonParseException {
-                return RatingType.fromValue(arg0.getAsString());
+            public RatingType deserialize(JsonParser arg0, DeserializationContext arg1) throws IOException, JsonProcessingException {
+                return RatingType.fromValue(arg0.getText());
             }
         });
 
-        return builder;
+        mapper.registerModule(traktModule);
+        return mapper;
     }
 }

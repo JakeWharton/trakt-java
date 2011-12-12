@@ -1,7 +1,7 @@
 package com.jakewharton.trakt.entities;
 
 import java.util.Date;
-import com.google.gson.annotations.SerializedName;
+import org.codehaus.jackson.annotate.JsonProperty;
 import com.jakewharton.trakt.TraktEntity;
 
 public class Person implements TraktEntity {
@@ -12,7 +12,7 @@ public class Person implements TraktEntity {
     public String biography;
     public Date birthday;
     public String birthplace;
-    @SerializedName("tmdb_id") public Integer tmdbId;
+    @JsonProperty("tmdb_id") public Integer tmdbId;
     public Images images;
 
     /** @deprecated Use {@link #name} */

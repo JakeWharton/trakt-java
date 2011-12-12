@@ -1,6 +1,6 @@
 package com.jakewharton.trakt.services;
 
-import com.google.gson.reflect.TypeToken;
+import org.codehaus.jackson.type.TypeReference;
 import com.jakewharton.trakt.TraktApiBuilder;
 import com.jakewharton.trakt.TraktApiService;
 import com.jakewharton.trakt.entities.Response;
@@ -112,7 +112,7 @@ public class ShoutService extends TraktApiService {
         private static final String URI = "/shout/episode/" + FIELD_API_KEY;
 
         private EpisodeBuilder(ShoutService service) {
-            super(service, new TypeToken<Response>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<Response>() {}, URI, HttpMethod.Post);
         }
 
         /**
@@ -202,7 +202,7 @@ public class ShoutService extends TraktApiService {
         private static final String URI = "/shout/movie/" + FIELD_API_KEY;
 
         private MovieBuilder(ShoutService service) {
-            super(service, new TypeToken<Response>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<Response>() {}, URI, HttpMethod.Post);
         }
 
         /**
@@ -270,7 +270,7 @@ public class ShoutService extends TraktApiService {
         private static final String URI = "/shout/show/" + FIELD_API_KEY;
 
         private ShowBuilder(ShoutService service) {
-            super(service, new TypeToken<Response>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<Response>() {}, URI, HttpMethod.Post);
         }
 
         /**

@@ -1,7 +1,7 @@
 package com.jakewharton.trakt.entities;
 
 import java.util.Date;
-import com.google.gson.annotations.SerializedName;
+import org.codehaus.jackson.annotate.JsonProperty;
 import com.jakewharton.trakt.TraktEntity;
 import com.jakewharton.trakt.enumerations.ActivityAction;
 import com.jakewharton.trakt.enumerations.ActivityType;
@@ -25,7 +25,7 @@ public class ActivityItem implements TraktEntity {
     public static class Elapsed implements TraktEntity {
         private static final long serialVersionUID = -6458210319412047876L;
 
-        @SerializedName("short")
+        @JsonProperty("short")
         public String _short;
         public String full;
     }
@@ -52,6 +52,6 @@ public class ActivityItem implements TraktEntity {
     public Movie movie;
 
     public List list;
-    @SerializedName("list_item")
+    @JsonProperty("list_item")
     public ListItem listItem;
 }

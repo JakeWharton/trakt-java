@@ -2,7 +2,7 @@ package com.jakewharton.trakt.entities;
 
 import java.util.Calendar;
 import java.util.List;
-import com.google.gson.annotations.SerializedName;
+import org.codehaus.jackson.annotate.JsonProperty;
 import com.jakewharton.trakt.TraktEntity;
 import com.jakewharton.trakt.enumerations.Gender;
 
@@ -27,10 +27,10 @@ public class UserProfile implements TraktEntity {
             private static final long serialVersionUID = 7210925664642958187L;
 
             public Integer watched;
-            @SerializedName("watched_unique") public Integer watchedUnique;
-            @SerializedName("watched_trakt") public Integer watchedTrakt;
-            @SerializedName("watched_trakt_unique") public Integer watchedTraktUnique;
-            @SerializedName("watched_elsewhere") public Integer watchedElsewhere;
+            @JsonProperty("watched_unique") public Integer watchedUnique;
+            @JsonProperty("watched_trakt") public Integer watchedTrakt;
+            @JsonProperty("watched_trakt_unique") public Integer watchedTraktUnique;
+            @JsonProperty("watched_elsewhere") public Integer watchedElsewhere;
             public Integer unwatched;
 
             /** @deprecated Use {@link #watched} */
@@ -68,10 +68,10 @@ public class UserProfile implements TraktEntity {
             private static final long serialVersionUID = 5061541628681754141L;
 
             public Integer watched;
-            @SerializedName("watched_unique") public Integer watchedUnique;
-            @SerializedName("watched_trakt") public Integer watchedTrakt;
-            @SerializedName("watched_trakt_unique") public Integer watchedTraktUnique;
-            @SerializedName("watched_elsewhere") public Integer watchedElsewhere;
+            @JsonProperty("watched_unique") public Integer watchedUnique;
+            @JsonProperty("watched_trakt") public Integer watchedTrakt;
+            @JsonProperty("watched_trakt_unique") public Integer watchedTraktUnique;
+            @JsonProperty("watched_elsewhere") public Integer watchedElsewhere;
             public Integer library;
             public Integer unwatched;
 
@@ -140,8 +140,8 @@ public class UserProfile implements TraktEntity {
     }
 
     public String username;
-    @SerializedName("protected") public Boolean _protected;
-    @SerializedName("full_name") public String fullName;
+    @JsonProperty("protected") public Boolean _protected;
+    @JsonProperty("full_name") public String fullName;
     public Gender gender;
     public Integer age;
     public String location;

@@ -1,6 +1,6 @@
 package com.jakewharton.trakt.entities;
 
-import com.google.gson.annotations.SerializedName;
+import org.codehaus.jackson.annotate.JsonProperty;
 import com.jakewharton.trakt.TraktEntity;
 import com.jakewharton.trakt.enumerations.ListItemType;
 
@@ -11,7 +11,7 @@ public class ListItem implements TraktEntity {
     public Movie movie;
     public TvShow show;
     public String season;
-    @SerializedName("episode_num") public String episodeNumber;
+    @JsonProperty("episode_num") public String episodeNumber;
     public TvShowEpisode episode;
 
     /** @deprecated Use {@link #type} */

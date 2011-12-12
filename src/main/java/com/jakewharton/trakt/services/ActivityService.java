@@ -1,7 +1,7 @@
 package com.jakewharton.trakt.services;
 
 import java.util.Date;
-import com.google.gson.reflect.TypeToken;
+import org.codehaus.jackson.type.TypeReference;
 import com.jakewharton.trakt.TraktApiBuilder;
 import com.jakewharton.trakt.TraktApiService;
 import com.jakewharton.trakt.entities.Activity;
@@ -150,7 +150,7 @@ public class ActivityService extends TraktApiService {
         private static final String URI = "/activity/community.json/" + FIELD_API_KEY + "/" + FIELD_TYPES + "/" + FIELD_ACTIONS + "/" + FIELD_TIMESTAMP;
 
         private CommunityBuilder(ActivityService service) {
-            super(service, new TypeToken<Activity>() {}, URI);
+            super(service, new TypeReference<Activity>() {}, URI);
         }
 
         /**
@@ -196,7 +196,7 @@ public class ActivityService extends TraktApiService {
         private static final String URI = "/activity/episodes.json/" + FIELD_API_KEY + "/" + FIELD_TITLE + "/" + FIELD_SEASON + "/" + FIELD_EPISODE + "/" + FIELD_ACTIONS + "/" + FIELD_TIMESTAMP;
 
         private EpisodesBuilder(ActivityService service) {
-            super(service, new TypeToken<Activity>() {}, URI);
+            super(service, new TypeReference<Activity>() {}, URI);
         }
 
         /**
@@ -266,7 +266,7 @@ public class ActivityService extends TraktApiService {
         private static final String URI = "/activity/friends.json/" + FIELD_API_KEY + "/" + FIELD_TYPES + "/" + FIELD_ACTIONS + "/" + FIELD_TIMESTAMP;
 
         private FriendsBuilder(ActivityService service) {
-            super(service, new TypeToken<Activity>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<Activity>() {}, URI, HttpMethod.Post);
         }
 
         /**
@@ -312,7 +312,7 @@ public class ActivityService extends TraktApiService {
         private static final String URI = "/activity/movies.json/" + FIELD_API_KEY + "/" + FIELD_TITLE + "/" + FIELD_ACTIONS + "/" + FIELD_TIMESTAMP;
 
         private MoviesBuilder(ActivityService service) {
-            super(service, new TypeToken<Activity>() {}, URI);
+            super(service, new TypeReference<Activity>() {}, URI);
         }
 
 
@@ -368,7 +368,7 @@ public class ActivityService extends TraktApiService {
         private static final String URI = "/activity/seasons.json/" + FIELD_API_KEY + "/" + FIELD_TITLE + "/" + FIELD_SEASON + "/" + FIELD_ACTIONS + "/" + FIELD_TIMESTAMP;
 
         private SeasonsBuilder(ActivityService service) {
-            super(service, new TypeToken<Activity>() {}, URI);
+            super(service, new TypeReference<Activity>() {}, URI);
         }
 
         /**
@@ -430,7 +430,7 @@ public class ActivityService extends TraktApiService {
         private static final String URI = "/activity/shows.json/" + FIELD_API_KEY + "/" + FIELD_TITLE + "/" + FIELD_ACTIONS + "/" + FIELD_TIMESTAMP;
 
         private ShowsBuilder(ActivityService service) {
-            super(service, new TypeToken<Activity>() {}, URI);
+            super(service, new TypeReference<Activity>() {}, URI);
         }
 
         /**
@@ -484,7 +484,7 @@ public class ActivityService extends TraktApiService {
         private static final String URI = "/activity/user.json/" + FIELD_API_KEY + "/" + FIELD_USERNAME + "/" + FIELD_TYPES + "/" + FIELD_ACTIONS + "/" + FIELD_TIMESTAMP;
 
         private UserBuilder(ActivityService service) {
-            super(service, new TypeToken<Activity>() {}, URI);
+            super(service, new TypeReference<Activity>() {}, URI);
         }
 
 

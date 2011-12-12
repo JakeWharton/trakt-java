@@ -1,7 +1,7 @@
 package com.jakewharton.trakt.services;
 
 import java.util.List;
-import com.google.gson.reflect.TypeToken;
+import org.codehaus.jackson.type.TypeReference;
 import com.jakewharton.trakt.TraktApiBuilder;
 import com.jakewharton.trakt.TraktApiService;
 import com.jakewharton.trakt.entities.Genre;
@@ -19,14 +19,14 @@ public class GenreService extends TraktApiService {
         private static final String URI = "/genres/movies.json/" + FIELD_API_KEY;
 
         private MoviesBuilder(GenreService service) {
-            super(service, new TypeToken<List<Genre>>() {}, URI);
+            super(service, new TypeReference<List<Genre>>() {}, URI);
         }
     }
     public static final class ShowsBuilder extends TraktApiBuilder<List<Genre>> {
         private static final String URI = "/genres/shows.json/" + FIELD_API_KEY;
 
         private ShowsBuilder(GenreService service) {
-            super(service, new TypeToken<List<Genre>>() {}, URI);
+            super(service, new TypeReference<List<Genre>>() {}, URI);
         }
     }
 }

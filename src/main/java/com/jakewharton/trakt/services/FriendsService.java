@@ -1,7 +1,7 @@
 package com.jakewharton.trakt.services;
 
 import java.util.List;
-import com.google.gson.reflect.TypeToken;
+import org.codehaus.jackson.type.TypeReference;
 import com.jakewharton.trakt.TraktApiBuilder;
 import com.jakewharton.trakt.TraktApiService;
 import com.jakewharton.trakt.entities.Response;
@@ -77,7 +77,7 @@ public class FriendsService extends TraktApiService {
         private static final String URI = "/friends/add/" + FIELD_API_KEY;
 
         private AddBuilder(FriendsService service) {
-            super(service, new TypeToken<Response>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<Response>() {}, URI, HttpMethod.Post);
         }
 
         /**
@@ -95,7 +95,7 @@ public class FriendsService extends TraktApiService {
         private static final String URI = "/friends/all/" + FIELD_API_KEY;
 
         private AllBuilder(FriendsService service) {
-            super(service, new TypeToken<List<UserProfile>>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<List<UserProfile>>() {}, URI, HttpMethod.Post);
         }
     }
     public static final class ApproveBuilder extends TraktApiBuilder<Response> {
@@ -104,7 +104,7 @@ public class FriendsService extends TraktApiService {
         private static final String URI = "/friends/approve/" + FIELD_API_KEY;
 
         private ApproveBuilder(FriendsService service) {
-            super(service, new TypeToken<Response>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<Response>() {}, URI, HttpMethod.Post);
         }
 
         /**
@@ -124,7 +124,7 @@ public class FriendsService extends TraktApiService {
         private static final String URI = "/friends/delete/" + FIELD_API_KEY;
 
         private DeleteBuilder(FriendsService service) {
-            super(service, new TypeToken<Response>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<Response>() {}, URI, HttpMethod.Post);
         }
 
         /**
@@ -144,7 +144,7 @@ public class FriendsService extends TraktApiService {
         private static final String URI = "/friends/deny/" + FIELD_API_KEY;
 
         private DenyBuilder(FriendsService service) {
-            super(service, new TypeToken<Response>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<Response>() {}, URI, HttpMethod.Post);
         }
 
         /**
@@ -162,7 +162,7 @@ public class FriendsService extends TraktApiService {
         private static final String URI = "/friends/requests/" + FIELD_API_KEY;
 
         private RequestsBuilder(FriendsService service) {
-            super(service, new TypeToken<List<UserProfile>>() {}, URI, HttpMethod.Post);
+            super(service, new TypeReference<List<UserProfile>>() {}, URI, HttpMethod.Post);
         }
     }
 }

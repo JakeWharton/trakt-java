@@ -1,15 +1,15 @@
 package com.jakewharton.trakt.entities;
 
-import com.google.gson.JsonArray;
-import com.google.gson.annotations.SerializedName;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.annotate.JsonProperty;
 
 public class ListItemsResponse extends Response {
     private static final long serialVersionUID = 8123553856114248596L;
 
     public Integer inserted;
-    @SerializedName("already_exist") public Integer alreadyExist;
+    @JsonProperty("already_exist") public Integer alreadyExist;
     public Integer skipped;
-    @SerializedName("skipped_array") public JsonArray skippedArray;
+    @JsonProperty("skipped_array") public JsonNode skippedArray;
 
     /** @deprecated Use {@link #inserted} */
     @Deprecated
@@ -28,7 +28,7 @@ public class ListItemsResponse extends Response {
     }
     /** @deprecated Use {@link #skippedArray} */
     @Deprecated
-    public JsonArray getSkippedArray() {
+    public JsonNode getSkippedArray() {
         return this.skippedArray;
     }
 }

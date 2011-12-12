@@ -2,7 +2,7 @@ package com.jakewharton.trakt.entities;
 
 import java.util.Calendar;
 import java.util.Date;
-import com.google.gson.annotations.SerializedName;
+import org.codehaus.jackson.annotate.JsonProperty;
 import com.jakewharton.trakt.TraktEntity;
 import com.jakewharton.trakt.enumerations.Rating;
 
@@ -14,14 +14,14 @@ public class TvShowEpisode implements TraktEntity {
     public String title;
     public String overview;
     public String url;
-    @SerializedName("first_aired") public Date firstAired;
+    @JsonProperty("first_aired") public Date firstAired;
     public Calendar inserted;
     public Integer plays;
     public Images images;
     public Ratings ratings;
     public Boolean watched;
     public Rating rating;
-    @SerializedName("in_watchlist") public Boolean inWatchlist;
+    @JsonProperty("in_watchlist") public Boolean inWatchlist;
 
     /** @deprecated Use {@link #season} */
     @Deprecated
